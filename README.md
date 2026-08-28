@@ -9,18 +9,18 @@
 ## 🛠️ Sesión 1 — Verificación y Preparación del Entorno
 
 ```text
-                          Environment check — Class 1                          
+                    Verificación del Entorno — Clase 1                         
 +-----------------------------------------------------------------------------+
-| Component                | Status | Detail                                  |
+| Componente               | Estado | Detalle                                 |
 |--------------------------+--------+-----------------------------------------|
 | Python 3.12              |   OK   | 3.12.10                                 |
 | uv                       |   OK   | uv 0.12.7 (x86_64-pc-windows-msvc)      |
 | Git                      |   OK   | git version 2.53.0                      |
 | Docker                   |   OK   | Docker version 29.7.2, build a7dcaa6    |
-| .gitignore protects .env |   OK   | protects .env                           |
+| .gitignore protege .env  |   OK   | protege .env                            |
 +-----------------------------------------------------------------------------+
 
-Environment ready. See you in Class 2.
+Entorno listo. Continuamos con la Clase 2.
 ```
 
 ---
@@ -33,7 +33,7 @@ Environment ready. See you in Class 2.
 3. **Justificación de la Estrategia de Memoria (Ventana Deslizante)**:
    * **Control de Costos y Contexto**: Mantiene un límite estricto de los últimos 8 turnos (16 mensajes), garantizando un techo de gasto predecible.
    * **Cero Sobrecosto de LLM**: A diferencia del *Resumen Progresivo*, no gasta llamadas adicionales para resumir texto viejo.
-   * **Baja Latencia**: Se procesa en memoria local en $\mathcal{O}(1)$ tiempo de cómputo.
+   * **Baja Latencia**: Se procesa en memoria local en tiempo constante sin latencia adicional.
 4. **Auditoría de Tokens en Vivo**: Monitoreo de `prompt_token_count`, `candidates_token_count` y `total_token_count` mediante `usage_metadata`.
 5. **Detección de Truncamiento**: Verificación automática de `finish_reason == MAX_TOKENS`.
 6. **Manejo de Errores Resiliente**: Distinción entre `ClientError` (4xx) y `ServerError` (5xx) / `429 (Resource Exhausted)` con reintentos automáticos y backoff exponencial.
