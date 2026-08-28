@@ -11,16 +11,16 @@
 ```text
                           Environment check — Class 1                          
 +-----------------------------------------------------------------------------+
-| Component                | Status  | Detail                                 |
-|--------------------------+---------+----------------------------------------|
-| Python 3.12              |   OK    | 3.12.10                                |
-| uv                       |   OK    | uv 0.12.7 (x86_64-pc-windows-msvc)     |
-| Git                      |   OK    | git version 2.53.0                     |
-| Docker                   | WARNING | not found (not required yet)           |
-| .gitignore protects .env |   OK    | protects .env                          |
+| Component                | Status | Detail                                  |
+|--------------------------+--------+-----------------------------------------|
+| Python 3.12              |   OK   | 3.12.10                                 |
+| uv                       |   OK   | uv 0.12.7 (x86_64-pc-windows-msvc)      |
+| Git                      |   OK   | git version 2.53.0                      |
+| Docker                   |   OK   | Docker version 29.7.2, build a7dcaa6    |
+| .gitignore protects .env |   OK   | protects .env                           |
 +-----------------------------------------------------------------------------+
 
-Environment ready.
+Environment ready. See you in Class 2.
 ```
 
 ---
