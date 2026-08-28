@@ -1,0 +1,17 @@
+﻿=== Session 2: Conversational Memory & LLM Integration Check ===
+Model: gemini-3.6-flash
+Strategy: Sliding Window (8 turns / 16 messages)
+
+Turn 1 -> User introduces: Carlos, Python FastAPI & MCP, Cuenca.
+Turn 2 -> uv vs pip comparison.
+Turn 3 -> Context window explanation.
+Turn 4 -> Stateless API nature.
+Turn 5 -> Roles user vs model in Gemini.
+Turn 6 -> Exponential backoff retry pattern.
+Turn 7 -> Production usage_metadata monitoring.
+Turn 8 -> Turn 1 Recall Query:
+Bot: "¡Claro que sí, Carlos! Recuerdo perfectamente que estás desarrollando tu backend en Python utilizando FastAPI y el protocolo MCP, y que te encuentras en la ciudad de Cuenca."
+
+Token Tracking: Active per call (usage_metadata).
+Truncation Check: Active (finish_reason check).
+Error Handling: ClientError (4xx) & ServerError/429 with exponential backoff retry.
