@@ -1,20 +1,20 @@
-﻿"""Session 2 — Generative AI APIs & Conversational Memory with Gemini.
+﻿"""Sesión 2 — APIs de IA Generativa y Memoria Conversacional con Gemini.
 
-Acceptance Criteria:
-1. Calls Gemini with explicit system_instruction, temperature, and max_output_tokens.
-2. Maintains a conversation of at least 8 turns where the model remembers a detail from Turn 1.
-3. Implements a Sliding Window memory strategy, justified in README.md.
-4. Logs total_token_count (prompt, candidates, total) for every call.
-5. Verifies finish_reason and alerts when the response is truncated (MAX_TOKENS).
-6. Handles ClientError (4xx) and ServerError (5xx/429) separately with exponential backoff retry.
-7. Reads API key from environment variables without exposing secrets.
+Criterios de Aceptación:
+1. Llamada a Gemini con system_instruction, temperature y max_output_tokens explícitos.
+2. Mantiene una conversación de al menos 8 turnos y el modelo recuerda un dato del turno 1.
+3. Implementa una estrategia de memoria (Ventana Deslizante) justificada en el README.md.
+4. Registra en consola el total_token_count (prompt, respuesta y total) de cada llamada.
+5. Verifica finish_reason y avisa cuando la respuesta viene truncada (MAX_TOKENS).
+6. Captura ClientError (4xx) y ServerError (5xx / 429) por separado, con reintento solo en el segundo.
+7. La API key se lee de variables de entorno (.env) sin exponer secretos.
 """
 
 import os
 import sys
 import time
 
-# Ensure UTF-8 output encoding across Windows terminals
+# Configurar codificación UTF-8 para la consola de Windows
 if sys.stdout and hasattr(sys.stdout, "reconfigure"):
     try:
         sys.stdout.reconfigure(encoding="utf-8")
@@ -27,28 +27,28 @@ from google.genai import errors, types
 from rich.console import Console
 from rich.panel import Panel
 
-# Initialize rich console with safe Windows encoding support
+# Inicializar consola Rich con soporte seguro para Windows
 console = Console(force_terminal=True, legacy_windows=False)
 
-# Configuration constants
+# Constantes de configuración
 MODEL_NAME = os.environ.get("GEMINI_MODEL", "gemini-3.6-flash")
 DEFAULT_TEMPERATURE = 0.7
 DEFAULT_MAX_OUTPUT_TOKENS = 1000
-MAX_HISTORY_TURNS = 8  # 8 full interaction turns (16 messages)
+MAX_HISTORY_TURNS = 8  # 8 turnos completos de interacción (16 mensajes)
 SYSTEM_INSTRUCTION = (
-    "You are a helpful and accurate AI teaching assistant for a Backend & MCP Python course. "
-    "Respond concisely in Spanish (maximum 2-3 sentences per answer) while preserving key facts "
-    "shared by the user across conversation turns."
+    "Eres un asistente pedagógico de IA experto para un curso de Backend y MCP en Python. "
+    "Responde de forma clara, concisa y en español (máximo 2 a 3 oraciones por respuesta), "
+    "recordando con precisión todos los datos que el usuario comparta a lo largo de la conversación."
 )
 
 
 def load_client() -> genai.Client:
-    """Loads environment variables and initializes the Gemini API client."""
+    """Carga las variables de entorno e inicializa el cliente de la API de Gemini."""
     load_dotenv()
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
         console.print(
-            "[bold red]Error: GEMINI_API_KEY not found in environment or .env file.[/bold red]"
+            "[bold red]Error: No se encontró GEMINI_API_KEY en el entorno o archivo .env.[/bold red]"
         )
         sys.exit(1)
     return genai.Client(api_key=api_key)
@@ -62,10 +62,10 @@ def send_message_with_retry(
     max_retries: int = 3,
     initial_backoff: float = 2.0,
 ) -> tuple[str, bool, dict]:
-    """Sends a request to Gemini with separate handling for ClientError and ServerError.
+    """Envía una petición a Gemini con manejo diferenciado de ClientError y ServerError.
 
-    Returns:
-        tuple[str, bool, dict]: (response_text, is_truncated, token_usage_dict)
+    Retorna:
+        tuple[str, bool, dict]: (texto_respuesta, esta_truncada, estadisticas_tokens)
     """
     config = types.GenerateContentConfig(
         system_instruction=SYSTEM_INSTRUCTION,
@@ -81,15 +81,15 @@ def send_message_with_retry(
                 config=config,
             )
 
-            # Check truncation status from finish_reason
+            # Verificar si la respuesta fue truncada
             candidate = response.candidates[0] if response.candidates else None
-            finish_reason = candidate.finish_reason if candidate else "UNKNOWN"
+            finish_reason = candidate.finish_reason if candidate else "DESCONOCIDO"
             is_truncated = (
                 "MAX_TOKENS" in str(finish_reason)
                 or finish_reason == types.FinishReason.MAX_TOKENS
             )
 
-            # Extract token usage metadata
+            # Extraer uso de tokens
             usage = response.usage_metadata
             token_stats = {
                 "prompt_tokens": usage.prompt_token_count if usage else 0,
@@ -101,35 +101,35 @@ def send_message_with_retry(
             return response.text or "", is_truncated, token_stats
 
         except errors.ClientError as exc:
-            # 429 Rate limit / Resource Exhausted is retryable with backoff
+            # 429 Límite de tasa / Recursos agotados es reintentable con backoff
             if getattr(exc, "code", None) == 429 or "RESOURCE_EXHAUSTED" in str(exc):
                 if attempt < max_retries:
                     sleep_time = initial_backoff * (2 ** (attempt - 1))
                     console.print(
-                        f"[yellow]Rate limit (429). Retrying in {sleep_time:.1f}s (attempt {attempt}/{max_retries})...[/yellow]"
+                        f"[yellow]Límite de cuota alcanzado (429). Reintentando en {sleep_time:.1f}s (intento {attempt}/{max_retries})...[/yellow]"
                     )
                     time.sleep(sleep_time)
                     continue
-            console.print(f"[bold red]ClientError (4xx - Do Not Retry):[/bold red] {exc}")
+            console.print(f"[bold red]ClientError (4xx - Error del cliente, NO reintentar):[/bold red] {exc}")
             raise
 
         except errors.ServerError as exc:
-            # 5xx Server error from provider — retry with exponential backoff
+            # 5xx Error del servidor del proveedor — reintentar con backoff exponencial
             if attempt < max_retries:
                 sleep_time = initial_backoff * (2 ** (attempt - 1))
                 console.print(
-                    f"[yellow]ServerError (5xx). Retrying in {sleep_time:.1f}s (attempt {attempt}/{max_retries})...[/yellow]"
+                    f"[yellow]ServerError (5xx - Error del servidor). Reintentando en {sleep_time:.1f}s (intento {attempt}/{max_retries})...[/yellow]"
                 )
                 time.sleep(sleep_time)
                 continue
             console.print(
-                f"[bold red]ServerError after {max_retries} retries:[/bold red] {exc}"
+                f"[bold red]ServerError tras {max_retries} intentos fallidos:[/bold red] {exc}"
             )
             raise
 
 
 def apply_sliding_window(history: list[dict], max_turns: int = MAX_HISTORY_TURNS) -> list[dict]:
-    """Applies a sliding window strategy to preserve only the most recent conversation turns."""
+    """Aplica la estrategia de ventana deslizante para conservar únicamente los turnos recientes."""
     max_messages = max_turns * 2
     if len(history) > max_messages:
         return history[-max_messages:]
@@ -142,12 +142,12 @@ def run_conversation_turn(
     user_prompt: str,
     turn_number: int,
 ) -> tuple[str, list[dict]]:
-    """Executes a single conversational turn, updating history and logging metrics."""
+    """Ejecuta un turno conversacional, actualizando el historial e imprimiendo métricas."""
     history.append({"role": "user", "parts": [{"text": user_prompt}]})
     bounded_history = apply_sliding_window(history, max_turns=MAX_HISTORY_TURNS)
 
-    console.print(f"\n[bold cyan]=== Turn {turn_number} ===[/bold cyan]")
-    console.print(f"[bold green]User:[/bold green] {user_prompt}")
+    console.print(f"\n[bold cyan]=== Turno {turn_number} ===[/bold cyan]")
+    console.print(f"[bold green]Usuario:[/bold green] {user_prompt}")
 
     reply_text, is_truncated, token_stats = send_message_with_retry(
         client=client,
@@ -159,25 +159,25 @@ def run_conversation_turn(
 
     if is_truncated:
         console.print(
-            "[bold red]WARNING: Response was truncated by MAX_TOKENS limit.[/bold red]"
+            "[bold red]ADVERTENCIA: La respuesta fue truncada por el límite de MAX_TOKENS.[/bold red]"
         )
 
     console.print(
-        f"[dim]Tokens -> Prompt: {token_stats['prompt_tokens']} | "
-        f"Response: {token_stats['candidates_tokens']} | "
+        f"[dim]📊 Tokens -> Entrada (Prompt): {token_stats['prompt_tokens']} | "
+        f"Salida (Respuesta): {token_stats['candidates_tokens']} | "
         f"Total: {token_stats['total_tokens']} | "
-        f"Finish: {token_stats['finish_reason']}[/dim]"
+        f"Causa de fin: {token_stats['finish_reason']}[/dim]"
     )
 
     return reply_text, history
 
 
 def run_session_demonstration(client: genai.Client) -> None:
-    """Executes an automated 8-turn conversation demonstrating Turn 1 recall and memory management."""
+    """Ejecuta una conversación automatizada de 8 turnos demostrando el recuerdo del Turno 1."""
     console.print(
         Panel.fit(
-            "[bold magenta]Session 2: Conversational Memory Demonstration[/bold magenta]\n"
-            f"Testing Gemini API ({MODEL_NAME}) with Sliding Window Memory & Token Tracking",
+            "[bold magenta]Sesión 2: Demostración de Memoria Conversacional con Gemini[/bold magenta]\n"
+            f"Modelo: {MODEL_NAME} | Estrategia: Ventana Deslizante | Control de Tokens y Reintentos",
             border_style="magenta",
         )
     )
@@ -204,7 +204,7 @@ def run_session_demonstration(client: genai.Client) -> None:
         )
         time.sleep(0.5)
 
-    console.print("\n[bold green]Environment check & 8-Turn Memory Test Completed Successfully![/bold green]")
+    console.print("\n[bold green]✔ ¡Prueba de 8 turnos y memoria conversacional completada con éxito![/bold green]")
 
 
 def main() -> None:
