@@ -1,0 +1,19 @@
+[project]
+name = "curso-mcp"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "jc.lozadacastillo", email = "jc.lozadacastillo@ASUS-BUNGAJC" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "rich>=15.0.0",
+]
+
+[project.scripts]
+curso-mcp = "curso_mcp:main"
+
+[build-system]
+requires = ["uv_build>=0.12.7,<0.13.0"]
+build-backend = "uv_build"
