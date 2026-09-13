@@ -1,0 +1,16 @@
+# Python & virtualenv
+.venv/
+__pycache__/
+*.py[cod]
+
+# Secretos y variables de entorno
+.env
+.env.*
+!.env.example
+
+# Test reports y coverage caches
+.pytest_cache/
+.report.json
+.coverage
+.coverage.json
+reporte-qa.html
