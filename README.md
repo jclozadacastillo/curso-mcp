@@ -1,4 +1,4 @@
-﻿# Proyecto: Curso de Backend y MCP en Python para IA Generativa
+# Proyecto: Curso de Backend y MCP en Python para IA Generativa
 
 **Desarrollador:** Juan Carlos Lozada  
 **Institución:** Universidad Regional Autónoma de Los Andes (UNIANDES)  
@@ -46,3 +46,21 @@ Entorno listo. Continuamos con la Clase 2.
 ```powershell
 uv run python chat_memory.py
 ```
+
+---
+
+## 🏛️ Proyecto Integrador (Sesión 10) — De la Arquitectura a los Agentes
+
+**Tema:** Sistema de Gestión y Reserva de Espacios (Consultorios, Salas y Canchas) con Spec-Driven Development, Arquitectura en Capas, OAuth2/JWT y Servidor MCP.
+
+* **Carpeta de Entrega:** [`entregas/proyecto-integrador/`](entregas/proyecto-integrador/)
+* **Informe Completo (PDF):** [`entregas/proyecto-integrador/INFORME_PROYECTO_INTEGRADOR.pdf`](entregas/proyecto-integrador/INFORME_PROYECTO_INTEGRADOR.pdf)
+* **Informe Completo (Markdown):** [`entregas/proyecto-integrador/INFORME_PROYECTO_INTEGRADOR.md`](entregas/proyecto-integrador/INFORME_PROYECTO_INTEGRADOR.md)
+* **Código Fuente y Spec-Kit:** [`entregas/proyecto-integrador/proyecto-curso-speckit/`](entregas/proyecto-integrador/proyecto-curso-speckit/)
+* **Resultados de Evaluación:**
+  * **72 pruebas automatizadas (100% aprobadas)**
+  * **100.0% de cobertura en capa de servicios**
+  * **94.0% de cobertura global del proyecto**
+  * **Inversión de Dependencias (DIP) con 0% mocks**
+  * **4 Tools FastMCP operativas** con confirmación en servidor para acciones destructivas
+
