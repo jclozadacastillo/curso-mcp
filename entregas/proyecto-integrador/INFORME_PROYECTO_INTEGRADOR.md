@@ -5,7 +5,7 @@
 **Institución:** Universidad Regional Autónoma de Los Andes (UNIANDES) / CEDIA  
 **Departamento:** Desarrollo de Software  
 **Fecha de entrega:** 18 de septiembre de 2026  
-**Repositorio GitHub:** [https://github.com/jclozadacastillo/curso-mcp](https://github.com/jclozadacastillo/curso-mcp)  
+**Repositorio GitHub:** [https://github.com/jclozadacastillo/curso-mcp/tree/master/entregas/proyecto-integrador](https://github.com/jclozadacastillo/curso-mcp/tree/master/entregas/proyecto-integrador)  
 
 ---
 
